@@ -9,6 +9,7 @@ Reference: https://docs.oracle.com/javase/8/docs/api/?java/util/stream/Stream.ht
 #include<functional>
 #include<vector>
 #include "BaseStream.h"
+#include "IntStream.h"
 
 template<typename T>
 class Stream : public BaseStream<T> {
@@ -17,7 +18,7 @@ public:
 	Stream(const Stream<T>& );
 	~Stream();
 	template<typename Function> auto map(Function) const;
-	auto mapToInt(std::function<int(const T&)>) const;
+	IntStream mapToInt(std::function<int(const T&)>) const;
 	auto forEach(std::function<void(const T&)>) const;
 	auto forEach(std::ostream&) const;
 	auto filter(std::function<bool(const T&)>) const;
@@ -25,8 +26,10 @@ public:
 	bool allMatch(T) const;
 	bool noneMatch(T) const;
 	int count() const;
+	std::optional<T> findFirst(T) const;
 	const T* toArray() const;
 	Stream<T> operator = (Stream<T> const&);
+	static Stream<T> of(T...);
 private:
 	const std::vector<T> elements;
 };
@@ -47,6 +50,11 @@ Stream<T> Stream<T>::operator=(Stream<T> const & obj)
 
 template<typename T>
 Stream<T>::Stream(std::vector<T> const& e) : elements(e){}
+
+template<typename T>
+static Stream<T> of(T args...) {
+	return Stream{ std::vector<T>{args} };
+}
 
 template<typename T>
 template<typename Function>
@@ -130,20 +138,30 @@ int Stream<T>::count() const {
 }
 
 template<typename T>
-template<typename Function>
-auto Stream<T>::mapToInt(std::function<int(const T&)> mapper) const
+IntStream Stream<T>::mapToInt(std::function<int(const T&)> mapper) const
 {
 	std::vector<int> intStream;
 	for (auto i = elements.begin(); i != elements.end(); ++i) {
 		intStream.push_back(mapper(*i));
 	}
-	return Stream<int>{intStream};
+	return IntStream{intStream};
 }
 
 template<typename T>
 const T * Stream<T>::toArray() const
 {
 	return &elements[0];
+}
+
+template<typename T>
+std::optional<T> Stream<T>::findFirst(T target) const
+{
+	for (auto i = elements.begin(); i != elements.end(); ++i) {
+		if (*i == target) {
+			return std::optional<T>{*i};
+		}
+	}
+	return std::optional<T>();
 }
 
 
