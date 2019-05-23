@@ -1,6 +1,8 @@
-#include<iostream>
-#include<functional>
-#include<vector>
+/*
+Author: Greg Blodgett
+
+The pure virtual base class that all other Stream classes will extend from 
+*/
 
 template<typename T>
 class BaseStream {
