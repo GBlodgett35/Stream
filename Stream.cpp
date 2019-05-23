@@ -8,7 +8,7 @@ Reference: https://docs.oracle.com/javase/8/docs/api/?java/util/stream/Stream.ht
 #include<iostream>
 #include<functional>
 #include<vector>
-#include "BaseStream.cpp"
+#include "BaseStream.h"
 
 template<typename T>
 class Stream : public BaseStream<T> {
