@@ -1,3 +1,9 @@
+/*
+Author: Greg Blodgett
+
+An example usage of the classes
+*/
+
 #include<iostream>
 #include<string>
 #include "Stream.cpp"
@@ -8,7 +14,9 @@ int main() {
 	Stream<std::string> a{ std::vector<std::string>{"1", "2", "3"} };
 	
 	a.map(lambda).filter([](int e) {return e > 1; }).forEach(std::cout);
-	//b.print();
+	
+	
+	
 	std::cin.get();
 	return 0;
 }
