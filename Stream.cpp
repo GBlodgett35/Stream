@@ -1,9 +1,9 @@
 /*
 Author: Greg Blodgett
-
 The template extention of the BaseStream class.
 Reference: https://docs.oracle.com/javase/8/docs/api/?java/util/stream/Stream.html
 */
+
 
 #include<iostream>
 #include<functional>
@@ -22,14 +22,14 @@ public:
 	auto forEach(std::function<void(const T&)>) const;
 	auto forEach(std::ostream&) const;
 	auto filter(std::function<bool(const T&)>) const;
-	bool anyMatch(T) const;
-	bool allMatch(T) const;
-	bool noneMatch(T) const;
+	bool anyMatch(std::function<bool(const T&)>) const;
+	bool allMatch(std::function<bool(const T&)>) const;
+	bool noneMatch(std::function<bool(const T&)>) const;
 	int count() const;
-	std::optional<T> findFirst(T) const;
+	std::optional<T> findFirst(std::function<bool(const T&)>) const;
 	const T* toArray() const;
 	Stream<T> operator = (Stream<T> const&);
-	static Stream<T> of(T...);
+	static Stream<T> of(T args...);
 private:
 	const std::vector<T> elements;
 };
@@ -51,6 +51,13 @@ Stream<T> Stream<T>::operator=(Stream<T> const & obj)
 template<typename T>
 Stream<T>::Stream(std::vector<T> const& e) : elements(e){}
 
+
+template<typename T>
+Stream<T> Stream<T>::of(T args...)
+{
+	return Stream{ std::vector<T>{args} };
+}
+//             ---------------------------------------------------------------------------
 template<typename T>
 static Stream<T> of(T args...) {
 	return Stream{ std::vector<T>{args} };
@@ -100,10 +107,10 @@ auto Stream<T>::forEach(std::ostream &stream) const
 }
 
 template<typename T>
-bool Stream<T>::anyMatch(T element) const
+bool Stream<T>::anyMatch(std::function<bool(const T&)> predicate) const
 {
 	for (auto i = elements.begin(); i != elements.end(); ++i) {
-		if (*i == element) {
+		if (predicate(*i)) {
 			return true;
 		}
 	}
@@ -111,10 +118,10 @@ bool Stream<T>::anyMatch(T element) const
 }
 
 template<typename T>
-bool Stream<T>::allMatch(T element) const
+bool Stream<T>::allMatch(std::function<bool(const T&)> predicate) const
 {
 	for (auto i = elements.begin(); i != elements.end(); ++i) {
-		if (*i != element) {
+		if (!predicate(*i)) {
 			return false;
 		}
 	}
@@ -122,10 +129,10 @@ bool Stream<T>::allMatch(T element) const
 }
 
 template<typename T>
-bool Stream<T>::noneMatch(T element) const
+bool Stream<T>::noneMatch(std::function<bool(const T&)> predicate) const
 {
 	for (auto i = elements.begin(); i != elements.end(); ++i) {
-		if (*i == element) {
+		if (predicate(*i)) {
 			return false;
 		}
 	}
@@ -154,14 +161,16 @@ const T * Stream<T>::toArray() const
 }
 
 template<typename T>
-std::optional<T> Stream<T>::findFirst(T target) const
+std::optional<T> Stream<T>::findFirst(std::function<bool(const T&)> target) const
 {
 	for (auto i = elements.begin(); i != elements.end(); ++i) {
-		if (*i == target) {
+		if (target(*i)) {
 			return std::optional<T>{*i};
 		}
 	}
-	return std::optional<T>();
+	return std::nullopt;
 }
+
+
 
 
