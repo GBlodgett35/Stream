@@ -1,3 +1,10 @@
+/*
+Author: Greg Blodgett
+
+The template extention of the BaseStream class.
+Reference: https://docs.oracle.com/javase/8/docs/api/?java/util/stream/Stream.html
+*/
+
 #include<iostream>
 #include<functional>
 #include<vector>
