@@ -1,5 +1,6 @@
 #pragma once
 #include<optional>
+#include<functional>
 /*
 Author: Greg Blodgett
 
@@ -12,9 +13,10 @@ public:
 	virtual ~BaseStream() {};
 	virtual int count() const = 0;
 	virtual const T* toArray() const = 0;
-	virtual bool anyMatch(T) const = 0;
-	virtual bool noneMatch(T) const = 0;
-	virtual bool allMatch(T) const = 0;
-	virtual std::optional<T> findFirst(T) const = 0;
-	virtual static BaseStream<T> of(T...) const = 0;
+	virtual bool anyMatch(std::function<bool(const T&)>) const = 0;
+	virtual bool noneMatch(std::function<bool(const T&)>) const = 0;
+	virtual bool allMatch(std::function<bool(const T&)>) const = 0;
+	virtual std::optional<T> findFirst(std::function<bool(const T&)>) const = 0;
+	virtual void forEach(std::function<void(const T&)>) const = 0;
+	
 };
