@@ -17,7 +17,7 @@ public:
 	Stream(const Stream<T>& );
 	~Stream();
 	template<typename Function> auto map(Function) const;
-	template<typename Function> auto mapToInt(std::function<int(const T&)>) const;
+	auto mapToInt(std::function<int(const T&)>) const;
 	auto forEach(std::function<void(const T&)>) const;
 	auto forEach(std::ostream&) const;
 	auto filter(std::function<bool(const T&)>) const;
